@@ -1,0 +1,126 @@
+<!-- USB Relay Control Node -->
+<script type="text/javascript">
+    RED.nodes.registerType('usb-relay', {
+        category: 'hardware',
+        color: '#a6bbcf',
+        defaults: {
+            name: { value: "" },
+            port: { value: "", required: true },
+            relay: { value: 1, required: true, validate: RED.validators.number() },
+            action: { value: "on", required: true }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "bridge.png",
+        label: function() {
+            return this.name || `USB Relay ${this.relay}`;
+        },
+        oneditprepare: function() {
+            var node = this;
+            // Populate serial ports
+            $.getJSON('/usb-relay/ports', function(data) {
+                var select = $('#node-input-port');
+                var currentPort = node.port;
+                select.empty();
+                select.append('<option value="">Select Port...</option>');
+                data.forEach(function(port) {
+                    var option = '<option value="' + port.path + '">' + port.path + ' - ' + port.manufacturer + '</option>';
+                    select.append(option);
+                });
+                // Set the previously selected port
+                if (currentPort) {
+                    select.val(currentPort);
+                }
+            });
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="usb-relay">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-port"><i class="fa fa-random"></i> Serial Port</label>
+        <select id="node-input-port" style="width:70%">
+            <option value="">Select Port...</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-relay"><i class="fa fa-toggle-on"></i> Relay Number</label>
+        <select id="node-input-relay" style="width:70%">
+            <option value="1">Relay 1</option>
+            <option value="2">Relay 2</option>
+            <option value="3">Relay 3</option>
+            <option value="4">Relay 4</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-action"><i class="fa fa-power-off"></i> Action</label>
+        <select id="node-input-action" style="width:70%">
+            <option value="on">Turn On</option>
+            <option value="off">Turn Off</option>
+            <option value="toggle">Toggle</option>
+        </select>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="usb-relay">
+    <p>Controls USB relay modules via serial communication.</p>
+    
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string</span></dt>
+        <dd>Action to perform: "on", "off", or "toggle"</dd>
+        <dt class="optional">relay <span class="property-type">number</span></dt>
+        <dd>Relay number (1-4) to control</dd>
+        <dt class="optional">port <span class="property-type">string</span></dt>
+        <dd>Serial port to use (overrides node configuration)</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>Contains relay number, action performed, and timestamp</dd>
+    </dl>
+
+    <h3>Details</h3>
+    <p>This node controls USB relay modules that use the CH340 USB-to-serial chip. 
+    The relay module must be connected via USB and the appropriate drivers installed.</p>
+    
+    <p>The node supports 4-channel relay modules and can control individual relays 
+    or respond to dynamic commands via input messages.</p>
+    
+    <h3>Configuration</h3>
+    <ul>
+        <li><strong>Serial Port:</strong> The COM port where the relay module is connected</li>
+        <li><strong>Relay Number:</strong> Which relay (1-4) to control by default</li>
+        <li><strong>Action:</strong> Default action when triggered without payload</li>
+    </ul>
+</script>
+
+<!-- USB Relay Config Node -->
+<script type="text/javascript">
+    RED.nodes.registerType('usb-relay-config', {
+        category: 'config',
+        defaults: {
+            name: { value: "", required: false },
+            port: { value: "", required: true }
+        },
+        label: function() {
+            return this.name || this.port || "USB Relay Config";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="usb-relay-config">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-port"><i class="fa fa-random"></i> Serial Port</label>
+        <input type="text" id="node-config-input-port" placeholder="e.g., COM5 or /dev/ttyUSB0">
+    </div>
+</script>

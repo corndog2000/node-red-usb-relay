@@ -1,0 +1,39 @@
+{
+  "name": "node-red-contrib-usb-relay",
+  "version": "4.0.0",
+  "description": "Node-RED nodes for controlling USB relay modules via serial communication",
+  "main": "nodes/usb-relay.js",
+  "scripts": {
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "node-red",
+    "relay",
+    "usb",
+    "serial",
+    "ch340",
+    "hardware",
+    "automation",
+    "iot"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/node-red-contrib-usb-relay.git"
+  },
+  "node-red": {
+    "nodes": {
+      "usb-relay": "nodes/usb-relay.js"
+    }
+  },
+  "dependencies": {
+    "serialport": "^12.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "files": [
+    "nodes/"
+  ]
+}
