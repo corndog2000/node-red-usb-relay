@@ -20,7 +20,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/node-red-contrib-usb-relay.git"
+    "url": "https://github.com/corndog2000/node-red-contrib-usb-relay.git"
   },
   "node-red": {
     "nodes": {
